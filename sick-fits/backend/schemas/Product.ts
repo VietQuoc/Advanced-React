@@ -5,7 +5,7 @@ export const Product = list({
   // TODO
   fields: {
     name: text({ isRequired: true }),
-    desscription: text({
+    description: text({
       ui: {
         displayMode: 'textarea',
       },
