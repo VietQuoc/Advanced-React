@@ -8,7 +8,9 @@ import {
 import { User } from './schemas/User';
 import { Product } from './schemas/Product';
 import { ProductImage } from './schemas/ProductImage';
+import { CartItem } from './schemas/CartItem';
 import { insertSeedData } from './seed-data';
+import { sendPasswordResetEmail } from './lib/mail';
 
 const databaseURL = process.env.DATABASE_URL || '';
 
@@ -24,6 +26,12 @@ const { withAuth } = createAuth({
   initFirstItem: {
     fields: ['name', 'email', 'password'],
     // TODO: Add in init role here
+  },
+  passwordResetLink: {
+    async sendToken(args) {
+      console.log('Send Token: ', args.token, args.identity);
+      await sendPasswordResetEmail(args.token, args.identity);
+    },
   },
 });
 
@@ -50,6 +58,7 @@ export default withAuth(
       User,
       Product,
       ProductImage,
+      CartItem,
     }),
     ui: {
       // Show UI for people have permission
