@@ -11,11 +11,7 @@ export default function paginationField() {
       const pages = Math.ceil(count / first);
 
       const items = existing.slice(skip, skip + first).filter((x) => x);
-      console.log('run');
-      console.log(data);
-      console.log(items.length, items.length, first, page, pages);
       if (items.length && items.length !== first && page === pages) {
-        console.log(items);
         return items;
       }
       if (items.length !== first) {

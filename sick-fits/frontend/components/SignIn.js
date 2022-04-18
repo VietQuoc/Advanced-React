@@ -34,8 +34,7 @@ export default function SignIn() {
   });
   async function handleSubmit(e) {
     e.preventDefault();
-    const res = await sigin();
-    console.log(res);
+    await sigin();
     resetForm();
   }
   const error =
