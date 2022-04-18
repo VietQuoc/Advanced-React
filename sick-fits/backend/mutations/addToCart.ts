@@ -22,15 +22,8 @@ async function addToCart(
     resolveFields: 'id,quantity',
   });
   const [existingCartItem] = allCartItems;
-  console.log(' allCartItems: ', allCartItems);
-  console.log(' sesh: ', sesh);
-  console.log(' productID: ', productID);
   // if exist increase 1
   if (existingCartItem) {
-    console.log(
-      ' This item is ready in cart, increase 1: ',
-      existingCartItem.quantity
-    );
     return await context.lists.CartItem.updateOne({
       id: existingCartItem.id,
       data: {

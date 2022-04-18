@@ -1,10 +1,12 @@
 import { get } from 'lodash';
 import Link from 'next/link';
+import Proptype from 'prop-types';
 import ItemStyles from './styles/ItemStyles';
 import Title from './styles/Title';
 import PriceTab from './styles/PriceTag';
 import formatMoney from '../lib/formatMoney';
 import DeleteProduct from './DeleteProduct';
+import AddToCart from './AddToCart';
 
 export default function Product({ product }) {
   const image =
@@ -30,8 +32,17 @@ export default function Product({ product }) {
         >
           Edit ✏️
         </Link>
+        <AddToCart id={product?.id} />
         <DeleteProduct id={id}>Delete</DeleteProduct>
       </div>
     </ItemStyles>
   );
 }
+
+Product.propTypes = {
+  product: Proptype.shape({
+    price: Proptype.number,
+    description: Proptype.string,
+    id: Proptype.string,
+  }),
+};
