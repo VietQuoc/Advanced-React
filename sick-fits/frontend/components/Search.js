@@ -36,7 +36,6 @@ export default function Search() {
     }
   );
   const items = data?.searchTerms || [];
-  console.log(data);
   resetIdCounter();
   const findItemChill = debounce(findItems, 500);
   function handleSelectedItemChange({ selectedItem }) {
@@ -56,7 +55,6 @@ export default function Search() {
     onSelectedItemChange: handleSelectedItemChange,
     onInputValueChange: ({ inputValue }) => {
       findItemChill({ variables: { searchItem: inputValue } });
-      console.log('findItems: ', inputValue);
     },
     itemToString: (item) => item?.name || '',
   });

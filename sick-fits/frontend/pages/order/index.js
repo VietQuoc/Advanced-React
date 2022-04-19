@@ -38,7 +38,7 @@ export default function SingleOrderPage() {
   if (loading) return <p>Loading...</p>;
   if (error) return <DisplayError error={error} />;
   const { order } = data || {};
-  console.log(order);
+
   return (
     <OrderStyles>
       <Head>

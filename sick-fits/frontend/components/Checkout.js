@@ -79,7 +79,6 @@ function CheckoutForm() {
           token: paymentMethod.id,
         },
       });
-      console.log('Finish: ', order);
 
       // 6. Change the page to view order
       router.push({
