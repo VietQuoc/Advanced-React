@@ -40,6 +40,7 @@ const AnimationStyles = styled.span`
 `;
 
 export default function CartCount({ count }) {
+  if (!count) return null;
   return (
     <AnimationStyles>
       <TransitionGroup>

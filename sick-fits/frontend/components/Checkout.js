@@ -7,10 +7,13 @@ import {
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import gql from 'graphql-tag';
+import { useRouter } from 'next/dist/client/router';
 import nProgress from 'nprogress';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useCart } from '../lib/cartState';
 import SickButton from './styles/SickButton';
+import { CURRENT_USER_QUERY } from './User';
 
 const CheckoutFormStyles = styled.form`
   box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.04);
@@ -42,8 +45,13 @@ function CheckoutForm() {
   const [loading, setLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
+  const { closeCart } = useCart();
   const [checkout, { error: grahpQLError }] = useMutation(
-    CREATE_ORDER_MUTATION
+    CREATE_ORDER_MUTATION,
+    {
+      refetchQueries: [{ query: CURRENT_USER_QUERY }],
+    }
   );
   async function handleSubmit(e) {
     // 1. Stop Submiting
@@ -51,31 +59,42 @@ function CheckoutForm() {
     setLoading(true);
     // 2. start transition
     nProgress.start();
-    // 3. Create payment method 4242 4242 4242 4242
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: elements.getElement(CardElement),
-    });
-    // 4. Handle error
-    if (error) {
-      setError(error);
+    try {
+      // 3. Create payment method 4242 4242 4242 4242
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: elements.getElement(CardElement),
+      });
+      // 4. Handle error
+      if (error) {
+        setError(error);
+        nProgress.done();
+        return;
+      }
+      setError(null);
+
+      // 5. Send the token to server via a custom mutation
+      const order = await checkout({
+        variables: {
+          token: paymentMethod.id,
+        },
+      });
+      console.log('Finish: ', order);
+
+      // 6. Change the page to view order
+      router.push({
+        pathname: '/order',
+        query: { id: order?.data?.checkout?.id },
+      });
+
+      // 7. Close Cart Function
+      closeCart();
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
       nProgress.done();
-      return;
     }
-    setError(null);
-
-    // 5. Send the token to server via a custom mutation
-    const order = await checkout({
-      variables: {
-        token: paymentMethod.id,
-      },
-    });
-    console.log('Finish: ', order);
-
-    // 6. Change the page to view order
-
-    setLoading(false);
-    nProgress.done();
   }
   return (
     <CheckoutFormStyles onSubmit={(e) => handleSubmit(e)}>
