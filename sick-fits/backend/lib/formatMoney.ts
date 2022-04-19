@@ -1,9 +1,10 @@
-const formatter = new Intl.NumberFormat('en-US', {
+const formatter = new Intl.NumberFormat('de', {
   style: 'currency',
-  currency: 'USD',
+  currency: 'VND',
+  minimumFractionDigits: 0,
 });
 
-export default function formatMoney(cents: number) {
-  const dollars = cents / 100;
+export default function formatMoney(cents: number): string {
+  const dollars = cents;
   return formatter.format(dollars);
 }
